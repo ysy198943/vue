@@ -38,7 +38,7 @@ export function initMixin(Vue: typeof Component) {
     // render of a parent component
     vm._scope.parent = undefined
     vm._scope._vm = true
-    // merge options
+    // merge options => 解读：内外配置merge
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
@@ -58,15 +58,23 @@ export function initMixin(Vue: typeof Component) {
       vm._renderProxy = vm
     }
     // expose real self
+    // 解读：
     vm._self = vm
+    // 解读：准备工作，丰富了挂载参数 + 挂载事件更新 + 模板解析*
     initLifecycle(vm)
     initEvents(vm)
     initRender(vm)
     callHook(vm, 'beforeCreate', undefined, false /* setContext */)
-    initInjections(vm) // resolve injections before data/props
+
+    // 解读：created具体做的事情：
+    // 1. inject注入
+    initInjections(vm) // resolve injections before data/props 
+    // 2. [data | props] & methods & [computed | watch] 数据响应式的所有事情的挂载
     initState(vm)
+    // 3. 初始化provide
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
+    // inject、data/props、provide的执行顺序？
 
     /* istanbul ignore if */
     if (__DEV__ && config.performance && mark) {

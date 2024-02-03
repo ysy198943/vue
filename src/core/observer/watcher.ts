@@ -156,6 +156,7 @@ export default class Watcher implements DepTarget {
 
   /**
    * Add a dependency to this directive.
+   * 解读：以来被收集
    */
   addDep(dep: Dep) {
     const id = dep.id

@@ -152,9 +152,11 @@ export function defineReactive(
   }
 
   let childOb = shallow ? val && val.__ob__ : observe(val, false, mock)
+  // 解读：
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
+    // 获取的时候，查到当前的依赖
     get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
@@ -176,6 +178,7 @@ export function defineReactive(
       }
       return isRef(value) && !shallow ? value.value : value
     },
+    // 当前值修改时，派发，对所有依赖进行通知
     set: function reactiveSetter(newVal) {
       const value = getter ? getter.call(obj) : val
       if (!hasChanged(value, newVal)) {

@@ -25,6 +25,12 @@ export interface SetupContext {
   expose: (exposed: Record<string, any>) => void
 }
 
+/**
+ * 这块针对的是外部传入的setup() {
+ *  return XXXX
+ * }
+ * @param vm 
+ */
 export function initSetup(vm: Component) {
   const options = vm.$options
   const setup = options.setup

@@ -61,6 +61,7 @@ export function initGlobalAPI(Vue: GlobalAPI) {
 
   extend(Vue.options.components, builtInComponents)
 
+  // 细节流程
   initUse(Vue)
   initMixin(Vue)
   initExtend(Vue)

@@ -56,6 +56,7 @@ export function initState(vm: Component) {
   // Composition API
   initSetup(vm)
 
+  // 解读：将methods方法挂载到实例，但是方法未执行
   if (opts.methods) initMethods(vm, opts.methods)
   if (opts.data) {
     initData(vm)
@@ -269,6 +270,7 @@ function createComputedGetter(key) {
             key
           })
         }
+        // 收集依赖
         watcher.depend()
       }
       return watcher.value

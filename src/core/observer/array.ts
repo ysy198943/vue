@@ -2,7 +2,7 @@
  * not type checking this file because flow doesn't play well with
  * dynamically accessing methods on Array prototype
  */
-
+// 解读：因为Object.defineProperty针对的是对象，所以不能监听数组。所以对数组的方法进行改写
 import { TriggerOpTypes } from '../../v3'
 import { def } from '../util/index'
 
