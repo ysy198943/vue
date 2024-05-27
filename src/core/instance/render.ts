@@ -41,6 +41,7 @@ export function initRender(vm: Component) {
   // normalization is always applied for the public version, used in
   // user-written render functions.
   // @ts-expect-error
+  // 解读：创建虚拟DOM
   vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true)
 
   // $attrs & $listeners are exposed for easier HOC creation.
@@ -49,6 +50,7 @@ export function initRender(vm: Component) {
 
   /* istanbul ignore else */
   if (__DEV__) {
+    // 劫持 $attrs
     defineReactive(
       vm,
       '$attrs',
@@ -58,6 +60,7 @@ export function initRender(vm: Component) {
       },
       true
     )
+    // 劫持 $listeners
     defineReactive(
       vm,
       '$listeners',

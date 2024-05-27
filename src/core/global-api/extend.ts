@@ -17,6 +17,7 @@ export function initExtend(Vue: GlobalAPI) {
   /**
    * Class inheritance
    */
+  // 给vue实例挂载属性
   Vue.extend = function (extendOptions: any): typeof Component {
     extendOptions = extendOptions || {}
     const Super = this

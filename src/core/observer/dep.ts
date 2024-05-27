@@ -29,6 +29,7 @@ export interface DepTarget extends DebuggerOptions {
  * @internal
  */
 export default class Dep {
+  // 解读: 使用 静态属性 的原因是：保证当时是唯一的 target
   static target?: DepTarget | null
   id: number
   subs: Array<DepTarget | null>
@@ -36,14 +37,16 @@ export default class Dep {
   _pending = false
 
   constructor() {
+    // 解读： 创建一个唯一的索引
     this.id = uid++
+    // 解读： 用于存放所有 依赖项
     this.subs = []
   }
-
+  // 解读：添加依赖
   addSub(sub: DepTarget) {
     this.subs.push(sub)
   }
-
+  //  解读：移除
   removeSub(sub: DepTarget) {
     // #12696 deps with massive amount of subscribers are extremely slow to
     // clean up in Chromium
@@ -55,10 +58,11 @@ export default class Dep {
       pendingCleanupDeps.push(this)
     }
   }
-
+  // 解读：依赖项挂载
   depend(info?: DebuggerEventExtraInfo) {
     if (Dep.target) {
       Dep.target.addDep(this)
+      //  解读：？？？onTrack 在哪里添加，且作用是什么？
       if (__DEV__ && info && Dep.target.onTrack) {
         Dep.target.onTrack({
           effect: Dep.target,
@@ -67,7 +71,7 @@ export default class Dep {
       }
     }
   }
-
+  // 变更通知
   notify(info?: DebuggerEventExtraInfo) {
     // stabilize the subscriber list first
     const subs = this.subs.filter(s => s) as DepTarget[]
@@ -80,6 +84,7 @@ export default class Dep {
     for (let i = 0, l = subs.length; i < l; i++) {
       const sub = subs[i]
       if (__DEV__ && info) {
+        //  解读：？？？onTrack 在哪里添加，且作用是什么？
         sub.onTrigger &&
           sub.onTrigger({
             effect: subs[i],

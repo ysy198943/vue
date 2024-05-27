@@ -17,6 +17,7 @@ export function initMixin(Vue: typeof Component) {
   Vue.prototype._init = function (options?: Record<string, any>) {
     const vm: Component = this
     // a uid
+    // 给节点添加唯一 id
     vm._uid = uid++
 
     let startTag, endTag
@@ -58,12 +59,17 @@ export function initMixin(Vue: typeof Component) {
       vm._renderProxy = vm
     }
     // expose real self
-    // 解读：
+    // 解读：_self 记录一个真实的 vm
     vm._self = vm
     // 解读：准备工作，丰富了挂载参数 + 挂载事件更新 + 模板解析*
     initLifecycle(vm)
+    // 给所有的 events(包括父组件的) 添加once/passive/capture/name 等装饰器
     initEvents(vm)
+    // 解读：生成 插槽、作用域插槽，对 $attr $listeners 做了数据的劫持 和 依赖的收集
     initRender(vm)
+
+    // 解读：执行 beforeCreate 生命周期函数
+    // 此时，数据还获取不到，因为还没有将 data、 props等注入
     callHook(vm, 'beforeCreate', undefined, false /* setContext */)
 
     // 解读：created具体做的事情：
@@ -73,6 +79,7 @@ export function initMixin(Vue: typeof Component) {
     initState(vm)
     // 3. 初始化provide
     initProvide(vm) // resolve provide after data/props
+    // 解读： data props methods computed 等数据响应式的都挂载完成时候，执行 created，但是 dom元素 还没有渲染
     callHook(vm, 'created')
     // inject、data/props、provide的执行顺序？
 

@@ -42,7 +42,7 @@ export function createElement(
   }
   return _createElement(context, tag, data, children, normalizationType)
 }
-
+// 解读：根据 tag 创建对应的VDOM
 export function _createElement(
   context: Component,
   tag?: string | Component | Function | Object,

@@ -134,6 +134,10 @@ export function defineReactive(
   mock?: boolean,
   observeEvenIfShallow = false
 ) {
+  // 解读：创建依赖类，通过依赖链来确定需要通知的对象
+  // 解读：Dep 劫持了所有的数据，
+  // 在数据 get 的时候，收集当前以及所有的子依赖项，记录在subs里面，
+  // 在 set 的时候，循环通知给所有的依赖项（subs）
   const dep = new Dep()
 
   const property = Object.getOwnPropertyDescriptor(obj, key)
@@ -152,11 +156,11 @@ export function defineReactive(
   }
 
   let childOb = shallow ? val && val.__ob__ : observe(val, false, mock)
-  // 解读：
+  // 解读：监听对象中key的获取和设置
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
-    // 获取的时候，查到当前的依赖
+    // 解读：获取的时候，将依赖挂载，便于之后变更通知
     get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
@@ -169,6 +173,7 @@ export function defineReactive(
         } else {
           dep.depend()
         }
+        // ？？解读：依赖项的依赖，也需要记录下来，便于通知
         if (childOb) {
           childOb.dep.depend()
           if (isArray(value)) {
@@ -178,7 +183,7 @@ export function defineReactive(
       }
       return isRef(value) && !shallow ? value.value : value
     },
-    // 当前值修改时，派发，对所有依赖进行通知
+    // 解读：当前值修改时，派发，对所有依赖进行通知
     set: function reactiveSetter(newVal) {
       const value = getter ? getter.call(obj) : val
       if (!hasChanged(value, newVal)) {
@@ -199,6 +204,8 @@ export function defineReactive(
         val = newVal
       }
       childOb = shallow ? newVal && newVal.__ob__ : observe(newVal, false, mock)
+      
+      // 解读：通过 dep 来通知变更
       if (__DEV__) {
         dep.notify({
           type: TriggerOpTypes.SET,

@@ -17,6 +17,7 @@ import {
 } from '../util/index'
 import type { GlobalAPI } from 'types/global-api'
 
+// 解读：对VUE类挂载
 export function initGlobalAPI(Vue: GlobalAPI) {
   // config
   const configDef: Record<string, any> = {}
@@ -45,12 +46,14 @@ export function initGlobalAPI(Vue: GlobalAPI) {
   Vue.nextTick = nextTick
 
   // 2.6 explicit observable API
+  // 挂载observe
   Vue.observable = <T>(obj: T): T => {
     observe(obj)
     return obj
   }
 
   Vue.options = Object.create(null)
+  // 挂载component、directive、filters
   ASSET_TYPES.forEach(type => {
     Vue.options[type + 's'] = Object.create(null)
   })
@@ -61,7 +64,8 @@ export function initGlobalAPI(Vue: GlobalAPI) {
 
   extend(Vue.options.components, builtInComponents)
 
-  // 细节流程
+  //解读：细节流程
+  // 使用.use，将插件引入
   initUse(Vue)
   initMixin(Vue)
   initExtend(Vue)
